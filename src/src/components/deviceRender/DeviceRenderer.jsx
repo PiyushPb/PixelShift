@@ -5,12 +5,16 @@ import { MdTabletMac } from "react-icons/md";
 
 const DeviceRenderer = ({
   device,
-  url = "https://example.com",
+  url,
   scale,
   onResize,
+  iframeRef,
+  onScroll,
+  onClick,
 }) => {
   const [iframeSrc, setIframeSrc] = useState("");
-  const containerRef = useRef(null); // Ref to capture the device container dimensions
+  const containerRef = useRef(null);
+  const iframeInternalRef = useRef(null);
 
   useEffect(() => {
     if (url) {
@@ -20,16 +24,41 @@ const DeviceRenderer = ({
     }
   }, [url]);
 
-  // Notify the parent container when the component has been resized
   useEffect(() => {
     if (containerRef.current) {
       const width = containerRef.current.offsetWidth;
       const height = containerRef.current.offsetHeight;
-      onResize(width, height); // Pass the size back to the parent container
+      onResize(width, height);
     }
-  }, [scale]); // Recalculate when scale changes
+  }, [scale]);
 
-  const dynamicScale = scale;
+  useEffect(() => {
+    const iframe = iframeInternalRef.current;
+    const iframeDoc =
+      iframe?.contentDocument || iframe?.contentWindow?.document;
+
+    if (iframeDoc) {
+      const handleScroll = () => {
+        const scrollTop = iframeDoc.documentElement.scrollTop;
+        const scrollLeft = iframeDoc.documentElement.scrollLeft;
+        onScroll(scrollTop, scrollLeft);
+      };
+
+      const handleClick = (event) => {
+        const { clientX, clientY, target } = event;
+        const tagName = target.tagName;
+        onClick(clientX, clientY, tagName);
+      };
+
+      iframeDoc.addEventListener("scroll", handleScroll);
+      iframeDoc.addEventListener("click", handleClick);
+
+      return () => {
+        iframeDoc.removeEventListener("scroll", handleScroll);
+        iframeDoc.removeEventListener("click", handleClick);
+      };
+    }
+  }, [onScroll, onClick]);
 
   return (
     <div
@@ -37,14 +66,14 @@ const DeviceRenderer = ({
       style={{
         width: `${device.width}px`,
         height: `${device.height}px`,
-        transform: `scale(${dynamicScale})`,
+        transform: `scale(${scale})`,
         transformOrigin: "top left",
       }}
     >
       <div className="mb-2 flex justify-between items-center">
         <h3 className="text-primary-text text-[12px]">{device.name}</h3>
         <div className="flex items-center gap-1">
-          <span className={`text-secondary-text text-[12px]`}>
+          <span className="text-secondary-text text-[12px]">
             @ {device.width} x {device.height} px
           </span>
           <div className="ml-2">
@@ -70,13 +99,16 @@ const DeviceRenderer = ({
           borderRadius: "5px",
           position: "relative",
           overflow: "hidden",
-          transformOrigin: "top left",
         }}
       >
         {iframeSrc && (
           <iframe
             src={iframeSrc}
             title={device.name}
+            ref={(ref) => {
+              iframeInternalRef.current = ref;
+              if (iframeRef) iframeRef(ref);
+            }}
             sandbox="allow-scripts allow-same-origin allow-popups allow-forms allow-modals"
             style={{
               position: "absolute",
@@ -85,7 +117,6 @@ const DeviceRenderer = ({
               width: `${device.width}px`,
               height: `${device.height}px`,
               border: "none",
-              transformOrigin: "top left",
             }}
           />
         )}

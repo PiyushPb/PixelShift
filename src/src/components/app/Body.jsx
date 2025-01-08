@@ -1,9 +1,15 @@
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useCallback, useMemo, useState, useRef } from "react";
 import { devices } from "../../constants/devices";
 import DeviceRenderer from "../deviceRender/DeviceRenderer";
 import DeviceTools from "../deviceRender/DeviceTools";
 
-function Body({ url, theme, resizePercentage }) {
+function Body({
+  url,
+  theme,
+  resizePercentage,
+  isScrollInSync,
+  setIsScrollInSync,
+}) {
   const selectedDevices = [
     devices.mobile[0],
     devices.mobile[3],
@@ -14,10 +20,10 @@ function Body({ url, theme, resizePercentage }) {
 
   const scale = useMemo(() => resizePercentage / 100, [resizePercentage]);
 
-  // State to store device dimensions dynamically
   const [deviceDimensions, setDeviceDimensions] = useState({});
 
-  // Handle resizing of a device, updating its dimensions in state
+  const iframeRefs = useRef({}); // Store refs for all iframes
+
   const handleResize = useCallback((deviceName, width, height) => {
     setDeviceDimensions((prevDimensions) => ({
       ...prevDimensions,
@@ -25,12 +31,25 @@ function Body({ url, theme, resizePercentage }) {
     }));
   }, []);
 
+  const handleScrollSync = useCallback(
+    (scrolledDeviceName, scrollTop, scrollLeft) => {
+      if (!isScrollInSync) return;
+
+      Object.entries(iframeRefs.current).forEach(([deviceName, iframeRef]) => {
+        if (deviceName !== scrolledDeviceName && iframeRef?.contentWindow) {
+          const iframeDoc = iframeRef.contentWindow.document;
+          iframeDoc.documentElement.scrollTo(scrollLeft, scrollTop); // Synchronize scroll position
+        }
+      });
+    },
+    [isScrollInSync]
+  );
+
   return (
-    <div className="flex w-full h-full pb-5">
-      {/* Container for all device renderings with auto overflow and custom scrollbar */}
-      <div className="flex flex-wrap gap-5 p-4 pb-10 h-full scroll-container">
+    <div className="flex w-full h-full pb-5 overflow-auto">
+      {/* Container for all device renderings */}
+      <div className="w-full flex flex-wrap gap-5 p-4 pb-10 h-full scroll-container">
         {selectedDevices.map((device) => {
-          // Get device dimensions or fallback to the default dimensions
           const dimensions = deviceDimensions[device.name] || {
             width: device.width,
             height: device.height,
@@ -41,11 +60,10 @@ function Body({ url, theme, resizePercentage }) {
               key={device.name}
               className="relative mb-10"
               style={{
-                width: `${dimensions.width * scale}px`, // Apply scaling here
-                height: `${dimensions.height * scale}px`, // Apply scaling here
+                width: `${dimensions.width * scale}px`,
+                height: `${dimensions.height * scale}px`,
               }}
             >
-              {/* Render device tools and device renderer */}
               <div className="flex flex-col">
                 <DeviceTools theme={theme} scale={scale} />
                 <DeviceRenderer
@@ -53,8 +71,12 @@ function Body({ url, theme, resizePercentage }) {
                   url={url}
                   theme={theme}
                   scale={scale}
+                  iframeRef={(ref) => (iframeRefs.current[device.name] = ref)}
                   onResize={(width, height) =>
                     handleResize(device.name, width, height)
+                  }
+                  onScroll={(scrollTop, scrollLeft) =>
+                    handleScrollSync(device.name, scrollTop, scrollLeft)
                   }
                 />
               </div>

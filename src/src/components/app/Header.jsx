@@ -3,7 +3,15 @@ import { GoArrowLeft, GoArrowRight, GoHome } from "react-icons/go";
 import { MdOutlineRefresh } from "react-icons/md";
 import HeaderTools from "./HeaderTools";
 
-function Header({ resizePercentage, setResizePercentage }) {
+function Header({
+  resizePercentage,
+  setResizePercentage,
+  isScrollInSync,
+  setIsScrollInSync,
+  isDevConsoleVisible,
+  setIsDevCOnsoleVisible,
+  url,
+}) {
   return (
     <div className="w-full flex justify-normal items-center p-3 bg-secondary-background">
       <div className="flex justify-start items-center gap-2">
@@ -24,11 +32,18 @@ function Header({ resizePercentage, setResizePercentage }) {
           type="text"
           placeholder="Enter the URL"
           className={`w-full border-none outline-none bg-transparent`}
-          //   onChange={(e) => setUrl(e.target.value)}
-          //   value={url}
+          value={url}
+          disabled="true"
         />
       </div>
-      <HeaderTools resizePercentage={resizePercentage} setResizePercentage={setResizePercentage}/>
+      <HeaderTools
+        resizePercentage={resizePercentage}
+        setResizePercentage={setResizePercentage}
+        isScrollInSync={isScrollInSync}
+        setIsScrollInSync={setIsScrollInSync}
+        isDevConsoleVisible={isDevConsoleVisible}
+        setIsDevCOnsoleVisible={setIsDevCOnsoleVisible}
+      />
     </div>
   );
 }
