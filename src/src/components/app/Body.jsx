@@ -46,7 +46,7 @@ function Body({
   );
 
   return (
-    <div className="flex w-full h-full pb-5 overflow-auto">
+    <div className="flex w-full h-full overflow-auto">
       {/* Container for all device renderings */}
       <div className="w-full flex flex-wrap gap-5 p-4 pb-10 h-full scroll-container">
         {selectedDevices.map((device) => {

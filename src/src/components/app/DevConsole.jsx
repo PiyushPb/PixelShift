@@ -1,7 +1,9 @@
 import React from "react";
 
 function DevConsole() {
-  return <div className="w-[800px] bg-red-500 h-full">DevConsole</div>;
+  return (
+    <div className="w-[1000px] bg-background dark:bg-background h-full "></div>
+  );
 }
 
 export default DevConsole;

@@ -4,13 +4,15 @@ import { MdOutlineRefresh } from "react-icons/md";
 import HeaderTools from "./HeaderTools";
 
 function Header({
+  url,
   resizePercentage,
   setResizePercentage,
   isScrollInSync,
   setIsScrollInSync,
   isDevConsoleVisible,
   setIsDevCOnsoleVisible,
-  url,
+  isSettingsVisible,
+  setIsSettingsVisible,
 }) {
   return (
     <div className="w-full flex justify-normal items-center p-3 bg-secondary-background">
@@ -43,6 +45,8 @@ function Header({
         setIsScrollInSync={setIsScrollInSync}
         isDevConsoleVisible={isDevConsoleVisible}
         setIsDevCOnsoleVisible={setIsDevCOnsoleVisible}
+        isSettingsVisible={isSettingsVisible}
+        setIsSettingsVisible={setIsSettingsVisible}
       />
     </div>
   );

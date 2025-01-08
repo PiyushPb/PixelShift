@@ -13,6 +13,8 @@ function HeaderTools({
   setIsScrollInSync,
   isDevConsoleVisible,
   setIsDevCOnsoleVisible,
+  isSettingsVisible,
+  setIsSettingsVisible,
 }) {
   const handleResizeChange = (event) => {
     setResizePercentage(event.target.value);
@@ -75,7 +77,18 @@ function HeaderTools({
       >
         <FaGithub size={20} className="text-gray-400 group-hover:text-white" />
       </a>
-      <LuSettings2 size={20} className="text-gray-400" />
+      {/* Toggle settings */}
+      <div
+        className={`w-[25px] h-[25px] flex justify-center items-center rounded-md cursor-pointer ${
+          isSettingsVisible ? "bg-primary" : ""
+        }`}
+        onClick={() => setIsSettingsVisible(!isSettingsVisible)}
+      >
+        <LuSettings2
+          size={20}
+          className={`${isSettingsVisible ? "text-white" : "text-gray-400"}`}
+        />
+      </div>
       {/* Toggle close the extension */}
       <div
         className="w-[25px] h-[25px] flex justify-center items-center rounded-md cursor-pointer group hover:bg-red-400 transition-all duration-200"
