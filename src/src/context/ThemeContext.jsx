@@ -9,8 +9,9 @@ export const useTheme = () => {
 
 export const ThemeProvider = ({ children }) => {
   // Get initial theme from localStorage or default to 'light'
-  const storedTheme = localStorage.getItem("theme") || "light";
-  const [theme, setTheme] = useState(storedTheme);
+  const [theme, setTheme] = useState(() => {
+    return localStorage.getItem("theme") || "light";
+  });
 
   // Toggle theme and save to localStorage
   const toggleTheme = () => {
