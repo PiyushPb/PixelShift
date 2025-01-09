@@ -1,11 +1,17 @@
-@import url("https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,100..900;1,100..900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&display=swap");
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+@layer utilities {
+  .devConsole-heading {
+    @apply text-primary-text text-[16px] font-bold;
+  }
+}
+
 * {
-  font-family: "Raleway", sans-serif;
+  font-family: "Manrope", serif;
 }
 
 /* Style for the scrollbar container */

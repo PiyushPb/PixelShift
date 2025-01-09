@@ -1,0 +1,208 @@
+import React from "react";
+import { HiDownload } from "react-icons/hi";
+
+function DownloadReport({ siteTags }) {
+  const handleDownload = () => {
+    // Create the HTML content
+    const htmlContent = `
+      <html>
+        <head>
+          <style>
+            /* Basic Reset */
+            * {
+              margin: 0;
+              padding: 0;
+              box-sizing: border-box;
+            }
+
+            /* Body */
+            body {
+              font-family: 'Arial', sans-serif;
+              line-height: 1.6;
+              background-color: #f4f4f4;
+              color: #333;
+              padding: 20px;
+              margin: 0;
+            }
+
+            /* Report Container */
+            .report-container {
+              background-color: #fff;
+              border-radius: 8px;
+              box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+              padding: 30px;
+              max-width: 800px;
+              margin: 30px auto;
+              position: relative;
+            }
+
+            /* Watermark */
+            .watermark {
+              position: absolute;
+              top: 50%;
+              left: 50%;
+              transform: translate(-50%, -50%) rotate(-45deg);
+              font-size: 80px;
+              color: rgba(0, 0, 0, 0.1);
+              font-weight: bold;
+              pointer-events: none;
+              z-index: -1;
+            }
+
+            /* Title */
+            h1 {
+              color: #2c3e50;
+              font-size: 28px;
+              margin-bottom: 20px;
+              text-align: center;
+            }
+
+            /* Subtitle */
+            h2 {
+              color: #2980b9;
+              font-size: 20px;
+              margin-bottom: 10px;
+            }
+
+            /* Section */
+            .section {
+              margin-bottom: 20px;
+            }
+
+            /* Meta Tags and Content */
+            .meta-tag {
+              font-weight: bold;
+              color: #2980b9;
+            }
+
+            .meta-content {
+              color: #34495e;
+              margin-left: 15px;
+            }
+
+            /* List */
+            ul {
+              list-style-type: none;
+              padding-left: 20px;
+            }
+
+            li {
+              margin-bottom: 8px;
+            }
+
+            /* Footer */
+            .footer {
+              margin-top: 30px;
+              font-size: 14px;
+              text-align: center;
+              color: #7f8c8d;
+            }
+
+            .footer a {
+              color: #2980b9;
+              text-decoration: none;
+            }
+
+            .footer a:hover {
+              text-decoration: underline;
+            }
+
+          </style>
+        </head>
+        <body>
+          <div class="report-container">
+            <!-- Watermark -->
+            <div class="watermark">Report created by PixleShift extension</div>
+
+            <h1>Site Information Report</h1>
+
+            <div class="section">
+              <h2>Title</h2>
+              <p>${siteTags.title || "No title available"}</p>
+            </div>
+
+            <div class="section">
+              <h2>Description</h2>
+              <p>${siteTags.description || "No description available."}</p>
+            </div>
+
+            <div class="section">
+              <h2>Meta Tags</h2>
+              <ul>
+                ${siteTags.metaTags
+                  .map(
+                    (meta) =>
+                      `<li><span class="meta-tag">${
+                        meta.name || meta.property
+                      }:</span> <span class="meta-content">${
+                        meta.content || "No content"
+                      }</span></li>`
+                  )
+                  .join("")}
+              </ul>
+            </div>
+
+            <div class="section">
+              <h2>Twitter Tags</h2>
+              <ul>
+                ${siteTags.twitterTags
+                  .map(
+                    (meta) =>
+                      `<li><span class="meta-tag">${
+                        meta.name || meta.property
+                      }:</span> <span class="meta-content">${
+                        meta.content || "No content"
+                      }</span></li>`
+                  )
+                  .join("")}
+              </ul>
+            </div>
+
+            <div class="section">
+              <h2>Open Graph Tags</h2>
+              <ul>
+                ${siteTags.openGraphTags
+                  .map(
+                    (meta) =>
+                      `<li><span class="meta-tag">${
+                        meta.name || meta.property
+                      }:</span> <span class="meta-content">${
+                        meta.content || "No content"
+                      }</span></li>`
+                  )
+                  .join("")}
+              </ul>
+            </div>
+
+            <div class="footer">
+              <p>Generated by <a href="https://www.pixleshift.com" target="_blank">PixleShift</a></p>
+            </div>
+          </div>
+        </body>
+      </html>
+    `;
+
+    // Create a Blob object from the HTML content
+    const blob = new Blob([htmlContent], { type: "text/html" });
+    const link = document.createElement("a");
+
+    // Create a download link
+    link.href = URL.createObjectURL(blob);
+    link.download = "site-report.html";
+    link.click();
+  };
+
+  return (
+    <div>
+      <button
+        onClick={handleDownload}
+        className="bg-primary hover:bg-primary-dark text-white font-bold py-1 px-3 rounded flex justify-normal items-center gap-2"
+      >
+        <HiDownload />
+        Download Report
+      </button>
+    </div>
+  );
+}
+
+export default DownloadReport;
