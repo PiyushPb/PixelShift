@@ -22,7 +22,7 @@ function SiteInfo() {
   useEffect(() => {
     // Create an invisible iframe
     const iframe = document.createElement("iframe");
-    iframe.src = "http://localhost:5173/test"; // Replace with your actual URL
+    iframe.src = window.location.href;
     iframe.style.display = "none"; // Make the iframe invisible
     iframe.onload = () => {
       // Access the iframe's document
@@ -111,7 +111,7 @@ function SiteInfo() {
             <img src={siteTags.icon} alt="Website Icon" />
           ) : (
             <img
-              src="https://curiospire.com/assets/android-chrome-192x192.png"
+              src="https://upload.wikimedia.org/wikipedia/commons/a/ac/No_image_available.svg"
               alt="Default Logo"
             />
           )}

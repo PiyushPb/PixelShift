@@ -45,7 +45,6 @@ function Home() {
               isScrollInSync={isScrollInSync}
               setIsScrollInSync={setIsScrollInSync}
             />
-            {/* {isDevConsoleVisible && <DevConsole />} */}
             <div
               className={`${
                 isDevConsoleVisible ? "block max-w-[1000px] " : "hidden"

@@ -1,7 +1,8 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { CiMobile3 } from "react-icons/ci";
 import { GrPersonalComputer } from "react-icons/gr";
 import { MdTabletMac } from "react-icons/md";
+import { injectVisionStyles } from "../../utils/visionStyles"; // Importing the utility function
 
 const DeviceRenderer = ({
   device,
@@ -11,6 +12,7 @@ const DeviceRenderer = ({
   iframeRef,
   onScroll,
   onClick,
+  visionDifficulty,
 }) => {
   const [iframeSrc, setIframeSrc] = useState("");
   const containerRef = useRef(null);
@@ -38,6 +40,17 @@ const DeviceRenderer = ({
       iframe?.contentDocument || iframe?.contentWindow?.document;
 
     if (iframeDoc) {
+      // Apply vision difficulty-based styles after the iframe loads
+      const applyStyles = () => {
+        injectVisionStyles(iframeDoc, visionDifficulty); // Use the imported function
+      };
+
+      // Wait for the iframe to load, and then apply the styles
+      iframe.onload = applyStyles;
+
+      // Reapply styles whenever the selected vision difficulty changes
+      applyStyles();
+
       const handleScroll = () => {
         const scrollTop = iframeDoc.documentElement.scrollTop;
         const scrollLeft = iframeDoc.documentElement.scrollLeft;
@@ -58,7 +71,7 @@ const DeviceRenderer = ({
         iframeDoc.removeEventListener("click", handleClick);
       };
     }
-  }, [onScroll, onClick]);
+  }, [onScroll, onClick, visionDifficulty]); // Re-run the effect when `visionDifficulty` changes
 
   return (
     <div
