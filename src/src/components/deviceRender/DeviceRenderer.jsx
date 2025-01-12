@@ -10,15 +10,25 @@ const DeviceRenderer = ({
   onScroll,
   onClick,
   visionDifficulty,
+  settings, // Receive the settings object directly
 }) => {
   const [iframeSrc, setIframeSrc] = useState("");
   const containerRef = useRef(null);
   const iframeInternalRef = useRef(null);
 
+  // Destructure the settings object to access isCSSEnabled and isJSEnabled
+  const { isCSSEnabled, isJSEnabled } = settings;
+
+  useEffect(() => {
+    console.log(settings);
+  }, [settings]);
+
+  // Effect to log visionDifficulty
   useEffect(() => {
     console.log(visionDifficulty);
   }, [visionDifficulty]);
 
+  // Effect to set iframe source URL
   useEffect(() => {
     if (url) {
       setIframeSrc(url);
@@ -27,6 +37,7 @@ const DeviceRenderer = ({
     }
   }, [url]);
 
+  // Effect to handle resizing
   useEffect(() => {
     if (containerRef.current) {
       const width = containerRef.current.offsetWidth;
@@ -35,6 +46,7 @@ const DeviceRenderer = ({
     }
   }, [scale]);
 
+  // Effect to set iframe listeners
   useEffect(() => {
     const iframe = iframeInternalRef.current;
     const cleanup = setupIframeListeners(
@@ -45,6 +57,29 @@ const DeviceRenderer = ({
     );
     return cleanup;
   }, [onScroll, onClick, visionDifficulty]);
+
+  // Effect to remove CSS or JS when disabled and reload when enabled
+  useEffect(() => {
+    if (iframeInternalRef.current && iframeInternalRef.current.contentWindow) {
+      const iframeDocument = iframeInternalRef.current.contentWindow.document;
+
+      // Remove CSS if not enabled
+      if (!isCSSEnabled) {
+        const styleTags = iframeDocument.querySelectorAll("style");
+        styleTags.forEach((styleTag) => styleTag.remove());
+      } else {
+        // Reload iframe when CSS is enabled again
+        const iframe = iframeInternalRef.current;
+        iframe.contentWindow.location.reload();
+      }
+
+      // Remove JS if not enabled
+      if (!isJSEnabled) {
+        const scriptTags = iframeDocument.querySelectorAll("script");
+        scriptTags.forEach((scriptTag) => scriptTag.remove());
+      }
+    }
+  }, [isCSSEnabled, isJSEnabled]);
 
   return (
     <div

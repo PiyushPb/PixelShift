@@ -27,6 +27,17 @@ function Body({
   const iframeRefs = useRef({});
   const [visionDifficulties, setVisionDifficulties] = useState({});
 
+  // Adding a deviceSettings state to manage CSS/JS and other settings
+  const [deviceSettings, setDeviceSettings] = useState(
+    selectedDevices.reduce((acc, device) => {
+      acc[device.name] = {
+        isCSSEnabled: true, // Default to CSS enabled
+        isJSEnabled: true, // Default to JS enabled
+      };
+      return acc;
+    }, {})
+  );
+
   const handleResize = useCallback((deviceName, width, height) => {
     setDeviceDimensions((prevDimensions) => ({
       ...prevDimensions,
@@ -81,6 +92,17 @@ function Body({
     }));
   };
 
+  // Function to toggle the setting (CSS/JS) for a specific device
+  const toggleDeviceSetting = (deviceName, settingKey) => {
+    setDeviceSettings((prevState) => ({
+      ...prevState,
+      [deviceName]: {
+        ...prevState[deviceName],
+        [settingKey]: !prevState[deviceName][settingKey],
+      },
+    }));
+  };
+
   return (
     <div className="flex w-full h-full overflow-auto">
       <div className="w-full flex flex-wrap gap-5 p-4 pb-10 h-full scroll-container">
@@ -100,7 +122,7 @@ function Body({
               }}
             >
               <div className="flex flex-col">
-                {/* DeviceTools with screenshot handlers */}
+                {/* DeviceTools with generalized setting handlers */}
                 <DeviceTools
                   theme={theme}
                   device={device}
@@ -111,6 +133,8 @@ function Body({
                   setVisionDifficulty={(difficulty) =>
                     updateVisionDifficulty(device.name, difficulty)
                   }
+                  settings={deviceSettings[device.name]} // Pass device settings
+                  toggleDeviceSetting={toggleDeviceSetting} // Toggle setting function
                 />
                 <DeviceRenderer
                   device={device}
@@ -127,6 +151,7 @@ function Body({
                   visionDifficulty={
                     visionDifficulties[device.name] || "default"
                   }
+                  settings={deviceSettings[device.name]} // Pass device settings
                 />
               </div>
             </div>
