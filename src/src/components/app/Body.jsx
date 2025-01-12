@@ -2,6 +2,10 @@ import React, { useCallback, useMemo, useState, useRef } from "react";
 import { devices } from "../../constants/devices";
 import DeviceRenderer from "../deviceRender/DeviceRenderer";
 import DeviceTools from "../deviceRender/DeviceTools";
+import {
+  takeViewportScreenshot,
+  takeFullScreenshot,
+} from "../../utils/screenshotUtils";
 
 function Body({
   url,
@@ -19,9 +23,7 @@ function Body({
   ];
 
   const scale = useMemo(() => resizePercentage / 100, [resizePercentage]);
-
   const [deviceDimensions, setDeviceDimensions] = useState({});
-
   const iframeRefs = useRef({}); // Store refs for all iframes
 
   const handleResize = useCallback((deviceName, width, height) => {
@@ -38,16 +40,41 @@ function Body({
       Object.entries(iframeRefs.current).forEach(([deviceName, iframeRef]) => {
         if (deviceName !== scrolledDeviceName && iframeRef?.contentWindow) {
           const iframeDoc = iframeRef.contentWindow.document;
-          iframeDoc.documentElement.scrollTo(scrollLeft, scrollTop); // Synchronize scroll position
+          iframeDoc.documentElement.scrollTo(scrollLeft, scrollTop);
         }
       });
     },
     [isScrollInSync]
   );
 
+  const takeScreenshot = async (device, type) => {
+    try {
+      const iframeRef = iframeRefs.current[device.name];
+      if (!iframeRef) {
+        console.warn(`Iframe ref not found for device: ${device.name}`);
+        return;
+      }
+      console.log(
+        `Taking ${type === "viewport" ? "viewport" : "full"} screenshot for: ${
+          device.name
+        }`
+      );
+
+      if (type === "viewport") {
+        await takeViewportScreenshot(iframeRef, device);
+      } else {
+        await takeFullScreenshot(iframeRef, device);
+      }
+    } catch (error) {
+      console.error(
+        `Error taking ${type} screenshot for: ${device.name}`,
+        error
+      );
+    }
+  };
+
   return (
     <div className="flex w-full h-full overflow-auto">
-      {/* Container for all device renderings */}
       <div className="w-full flex flex-wrap gap-5 p-4 pb-10 h-full scroll-container">
         {selectedDevices.map((device) => {
           const dimensions = deviceDimensions[device.name] || {
@@ -65,7 +92,15 @@ function Body({
               }}
             >
               <div className="flex flex-col">
-                <DeviceTools theme={theme} scale={scale} />
+                {/* DeviceTools with screenshot handlers */}
+                <DeviceTools
+                  theme={theme}
+                  device={device}
+                  onViewportScreenshot={() =>
+                    takeScreenshot(device, "viewport")
+                  }
+                  onFullScreenshot={() => takeScreenshot(device, "full")}
+                />
                 <DeviceRenderer
                   device={device}
                   url={url}
