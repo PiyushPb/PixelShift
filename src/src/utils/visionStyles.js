@@ -1,3 +1,53 @@
+// Constant for vision difficulty settings
+export const VISION_DIFFICULTY_SETTINGS = [
+  { id: "default", name: "Default", description: "No visual modifications." },
+  {
+    id: "deuteranopia",
+    name: "Deuteranopia",
+    description: "Simulates difficulty distinguishing red and green hues.",
+  },
+  {
+    id: "protanopia",
+    name: "Protanopia",
+    description: "Simulates red-blindness.",
+  },
+  {
+    id: "tritanopia",
+    name: "Tritanopia",
+    description: "Simulates blue-blindness.",
+  },
+  {
+    id: "high-contrast",
+    name: "High Contrast",
+    description: "Applies high contrast for better readability.",
+  },
+  {
+    id: "night-mode",
+    name: "Night Mode",
+    description: "Dark mode for reduced strain in low-light environments.",
+  },
+  {
+    id: "low-vision",
+    name: "Low Vision",
+    description: "Increases font size and line height for easier readability.",
+  },
+  {
+    id: "monochrome",
+    name: "Monochrome",
+    description: "Converts the content to grayscale.",
+  },
+  {
+    id: "blurred-vision",
+    name: "Blurred Vision",
+    description: "Simulates difficulty focusing by applying a blur effect.",
+  },
+  {
+    id: "high-brightness",
+    name: "High Brightness",
+    description: "Simulates an excessively bright screen.",
+  },
+];
+
 // Function to inject vision difficulty-based styles into the iframe
 export const injectVisionStyles = (iframeDoc, visionDifficulty) => {
   if (!iframeDoc) return;
@@ -74,7 +124,33 @@ export const injectVisionStyles = (iframeDoc, visionDifficulty) => {
         `;
       break;
 
+    case "monochrome":
+      styleTag.innerHTML = `
+          body {
+            filter: grayscale(100%);
+          }
+        `;
+      break;
+
+    case "blurred-vision":
+      styleTag.innerHTML = `
+          body {
+            filter: blur(2px);
+          }
+        `;
+      break;
+
+    case "high-brightness":
+      styleTag.innerHTML = `
+          body {
+            filter: brightness(150%);
+          }
+        `;
+      break;
+
+    case "none":
     default:
+      // No styles applied
       break;
   }
 };

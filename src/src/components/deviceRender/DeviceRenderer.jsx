@@ -16,6 +16,10 @@ const DeviceRenderer = ({
   const iframeInternalRef = useRef(null);
 
   useEffect(() => {
+    console.log(visionDifficulty);
+  }, [visionDifficulty]);
+
+  useEffect(() => {
     if (url) {
       setIframeSrc(url);
     } else {

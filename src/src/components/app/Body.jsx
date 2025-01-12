@@ -24,7 +24,8 @@ function Body({
 
   const scale = useMemo(() => resizePercentage / 100, [resizePercentage]);
   const [deviceDimensions, setDeviceDimensions] = useState({});
-  const iframeRefs = useRef({}); // Store refs for all iframes
+  const iframeRefs = useRef({});
+  const [visionDifficulties, setVisionDifficulties] = useState({});
 
   const handleResize = useCallback((deviceName, width, height) => {
     setDeviceDimensions((prevDimensions) => ({
@@ -73,6 +74,13 @@ function Body({
     }
   };
 
+  const updateVisionDifficulty = (deviceName, difficulty) => {
+    setVisionDifficulties((prev) => ({
+      ...prev,
+      [deviceName]: difficulty,
+    }));
+  };
+
   return (
     <div className="flex w-full h-full overflow-auto">
       <div className="w-full flex flex-wrap gap-5 p-4 pb-10 h-full scroll-container">
@@ -100,6 +108,9 @@ function Body({
                     takeScreenshot(device, "viewport")
                   }
                   onFullScreenshot={() => takeScreenshot(device, "full")}
+                  setVisionDifficulty={(difficulty) =>
+                    updateVisionDifficulty(device.name, difficulty)
+                  }
                 />
                 <DeviceRenderer
                   device={device}
@@ -112,6 +123,9 @@ function Body({
                   }
                   onScroll={(scrollTop, scrollLeft) =>
                     handleScrollSync(device.name, scrollTop, scrollLeft)
+                  }
+                  visionDifficulty={
+                    visionDifficulties[device.name] || "default"
                   }
                 />
               </div>

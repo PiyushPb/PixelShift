@@ -8,12 +8,42 @@ import {
   MenuList,
   MenuItem,
 } from "@material-tailwind/react";
+import { VISION_DIFFICULTY_SETTINGS } from "../../utils/visionStyles";
 
-function DeviceTools({ onViewportScreenshot, onFullScreenshot }) {
+function DeviceTools({
+  onViewportScreenshot,
+  onFullScreenshot,
+  setVisionDifficulty,
+}) {
   return (
     <div className="flex justify-end items-center mb-2 w-full">
       <div className="flex justify-end items-center gap-2">
-        <IoSettingsOutline className="text-primary-text" />
+        <Menu
+          animate={{
+            mount: { y: 0 },
+            unmount: { y: 25 },
+          }}
+        >
+          <MenuHandler>
+            <div>
+              <IoSettingsOutline className="text-primary-text" />
+            </div>
+          </MenuHandler>
+          <MenuList>
+            {VISION_DIFFICULTY_SETTINGS.map((setting) => {
+              return (
+                <MenuItem
+                  key={setting.id}
+                  onClick={() => {
+                    setVisionDifficulty(setting.id);
+                  }}
+                >
+                  <p className="text-primary-text">{setting.name}</p>
+                </MenuItem>
+              );
+            })}
+          </MenuList>
+        </Menu>
         <Menu
           animate={{
             mount: { y: 0 },
