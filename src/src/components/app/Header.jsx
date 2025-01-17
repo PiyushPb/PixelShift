@@ -10,9 +10,11 @@ function Header({
   isScrollInSync,
   setIsScrollInSync,
   isDevConsoleVisible,
-  setIsDevCOnsoleVisible,
+  setIsDevConsoleVisible,
   isSettingsVisible,
   setIsSettingsVisible,
+  selectedDevices,
+  removeDevice,
 }) {
   return (
     <div className="w-full flex justify-normal items-center p-3 bg-secondary-background">
@@ -44,9 +46,11 @@ function Header({
         isScrollInSync={isScrollInSync}
         setIsScrollInSync={setIsScrollInSync}
         isDevConsoleVisible={isDevConsoleVisible}
-        setIsDevCOnsoleVisible={setIsDevCOnsoleVisible}
+        setIsDevCOnsoleVisible={setIsDevConsoleVisible}
         isSettingsVisible={isSettingsVisible}
         setIsSettingsVisible={setIsSettingsVisible}
+        selectedDevices={selectedDevices}
+        removeDevice={removeDevice}
       />
     </div>
   );

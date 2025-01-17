@@ -1,7 +1,7 @@
 {
   "name": "src",
   "private": true,
-  "version": "0.0.0",
+  "version": "0.0.1Beta",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -15,6 +15,7 @@
     "html2pdf.js": "^0.10.2",
     "jspdf": "^2.5.2",
     "react": "^18.3.1",
+    "react-beautiful-dnd": "^13.1.1",
     "react-dom": "^18.3.1",
     "react-icons": "^5.4.0",
     "react-router-dom": "^7.1.1"

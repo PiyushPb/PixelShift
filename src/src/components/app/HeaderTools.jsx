@@ -5,6 +5,14 @@ import { LuSettings2, LuMousePointerClick } from "react-icons/lu";
 import { TbLayoutSidebarRightFilled } from "react-icons/tb";
 import { LiaLaptopSolid } from "react-icons/lia";
 import { PiMouseScroll } from "react-icons/pi";
+import {
+  Button,
+  Menu,
+  MenuHandler,
+  MenuItem,
+  MenuList,
+} from "@material-tailwind/react";
+import { FaArrowsUpDown } from "react-icons/fa6";
 
 function HeaderTools({
   resizePercentage,
@@ -15,7 +23,14 @@ function HeaderTools({
   setIsDevCOnsoleVisible,
   isSettingsVisible,
   setIsSettingsVisible,
+  selectedDevices,
+  removeDevice, // Receive removeDevice function
 }) {
+  function selectedDevicesCount() {
+    const devicesCount = selectedDevices.length;
+    return devicesCount > 9 ? "9+" : devicesCount;
+  }
+
   const handleResizeChange = (event) => {
     setResizePercentage(event.target.value);
   };
@@ -33,14 +48,43 @@ function HeaderTools({
           className={`${isScrollInSync ? "text-white" : "text-gray-400"}`}
         />
       </div>
-      {/* TODO : Add syncClick event in future */}
-      {/* <LuMousePointerClick size={20} className="text-gray-400" /> */}
-      <div className="relative">
-        <span className="absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] text-[12px] select-none">
-          2
-        </span>
-        <LiaLaptopSolid size={20} className="text-gray-400" />
+      {/* Selected Devices */}
+      <div>
+        <Menu animate={{ mount: { y: 0 }, unmount: { y: 25 } }}>
+          <MenuHandler>
+            <div className="relative">
+              <span className="absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] text-[12px] select-none">
+                {selectedDevicesCount()}
+              </span>
+              <LiaLaptopSolid size={20} className="text-gray-400" />
+            </div>
+          </MenuHandler>
+          <MenuList className="w-[300px]">
+            <div className="border-none outline-none focus:outline-none max-h-[500px] overflow-y-auto">
+              {selectedDevices.map((device) => (
+                <MenuItem
+                  key={device.id}
+                  className="flex justify-between items-center gap-2"
+                >
+                  <span>{device.name}</span>
+                  <div className="flex items-center gap-2">
+                    {/* Close button for each device */}
+                    <IoCloseCircleOutline
+                      size={20}
+                      className="text-gray-400 cursor-pointer"
+                      onClick={() => removeDevice(device.id)} // Pass the specific device ID
+                    />
+                  </div>
+                </MenuItem>
+              ))}
+            </div>
+            <Button className="w-full text-[12px] font-normal normal-case font-family-manrope mt-3">
+              Add New Device
+            </Button>
+          </MenuList>
+        </Menu>
       </div>
+      {/* Camera */}
       <IoCameraOutline size={20} className="text-gray-400" />
 
       {/* Toggle SideDevConsole */}

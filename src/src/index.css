@@ -14,6 +14,10 @@
   font-family: "Manrope", serif;
 }
 
+.font-family-manrope {
+  font-family: "Manrope", serif;
+}
+
 /* Style for the scrollbar container */
 .scroll-container {
   overflow-x: auto;

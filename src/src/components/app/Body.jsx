@@ -13,24 +13,16 @@ function Body({
   resizePercentage,
   isScrollInSync,
   setIsScrollInSync,
+  selectedDevices,
 }) {
-  const selectedDevices = [
-    devices.mobile[0],
-    devices.mobile[3],
-    devices.tablets[0],
-    devices.computers[0],
-    devices.computers[4],
-  ];
-
   const scale = useMemo(() => resizePercentage / 100, [resizePercentage]);
   const [deviceDimensions, setDeviceDimensions] = useState({});
   const iframeRefs = useRef({});
   const [visionDifficulties, setVisionDifficulties] = useState({});
 
-  // Adding a deviceSettings state to manage CSS/JS and other settings
   const [deviceSettings, setDeviceSettings] = useState(
     selectedDevices.reduce((acc, device) => {
-      acc[device.name] = {
+      acc[device.id] = {
         isCSSEnabled: true, // Default to CSS enabled
         isJSEnabled: true, // Default to JS enabled
       };
@@ -38,19 +30,19 @@ function Body({
     }, {})
   );
 
-  const handleResize = useCallback((deviceName, width, height) => {
+  const handleResize = useCallback((deviceId, width, height) => {
     setDeviceDimensions((prevDimensions) => ({
       ...prevDimensions,
-      [deviceName]: { width, height },
+      [deviceId]: { width, height },
     }));
   }, []);
 
   const handleScrollSync = useCallback(
-    (scrolledDeviceName, scrollTop, scrollLeft) => {
+    (scrolledDeviceId, scrollTop, scrollLeft) => {
       if (!isScrollInSync) return;
 
-      Object.entries(iframeRefs.current).forEach(([deviceName, iframeRef]) => {
-        if (deviceName !== scrolledDeviceName && iframeRef?.contentWindow) {
+      Object.entries(iframeRefs.current).forEach(([deviceId, iframeRef]) => {
+        if (deviceId !== scrolledDeviceId && iframeRef?.contentWindow) {
           const iframeDoc = iframeRef.contentWindow.document;
           iframeDoc.documentElement.scrollTo(scrollLeft, scrollTop);
         }
@@ -61,7 +53,7 @@ function Body({
 
   const takeScreenshot = async (device, type) => {
     try {
-      const iframeRef = iframeRefs.current[device.name];
+      const iframeRef = iframeRefs.current[device.id];
       if (!iframeRef) {
         console.warn(`Iframe ref not found for device: ${device.name}`);
         return;
@@ -85,20 +77,19 @@ function Body({
     }
   };
 
-  const updateVisionDifficulty = (deviceName, difficulty) => {
+  const updateVisionDifficulty = (deviceId, difficulty) => {
     setVisionDifficulties((prev) => ({
       ...prev,
-      [deviceName]: difficulty,
+      [deviceId]: difficulty,
     }));
   };
 
-  // Function to toggle the setting (CSS/JS) for a specific device
-  const toggleDeviceSetting = (deviceName, settingKey) => {
+  const toggleDeviceSetting = (deviceId, settingKey) => {
     setDeviceSettings((prevState) => ({
       ...prevState,
-      [deviceName]: {
-        ...prevState[deviceName],
-        [settingKey]: !prevState[deviceName][settingKey],
+      [deviceId]: {
+        ...prevState[deviceId],
+        [settingKey]: !prevState[deviceId][settingKey],
       },
     }));
   };
@@ -107,14 +98,14 @@ function Body({
     <div className="flex w-full h-full overflow-auto">
       <div className="w-full flex flex-wrap gap-5 p-4 pb-10 h-full scroll-container">
         {selectedDevices.map((device) => {
-          const dimensions = deviceDimensions[device.name] || {
+          const dimensions = deviceDimensions[device.id] || {
             width: device.width,
             height: device.height,
           };
 
           return (
             <div
-              key={device.name}
+              key={device.id}
               className="relative mb-10"
               style={{
                 width: `${dimensions.width * scale}px`,
@@ -122,7 +113,6 @@ function Body({
               }}
             >
               <div className="flex flex-col">
-                {/* DeviceTools with generalized setting handlers */}
                 <DeviceTools
                   theme={theme}
                   device={device}
@@ -131,27 +121,27 @@ function Body({
                   }
                   onFullScreenshot={() => takeScreenshot(device, "full")}
                   setVisionDifficulty={(difficulty) =>
-                    updateVisionDifficulty(device.name, difficulty)
+                    updateVisionDifficulty(device.id, difficulty)
                   }
-                  settings={deviceSettings[device.name]} // Pass device settings
-                  toggleDeviceSetting={toggleDeviceSetting} // Toggle setting function
+                  settings={deviceSettings[device.id]} // Pass device settings
+                  toggleDeviceSetting={(settingKey) =>
+                    toggleDeviceSetting(device.id, settingKey)
+                  }
                 />
                 <DeviceRenderer
                   device={device}
                   url={url}
                   theme={theme}
                   scale={scale}
-                  iframeRef={(ref) => (iframeRefs.current[device.name] = ref)}
+                  iframeRef={(ref) => (iframeRefs.current[device.id] = ref)}
                   onResize={(width, height) =>
-                    handleResize(device.name, width, height)
+                    handleResize(device.id, width, height)
                   }
                   onScroll={(scrollTop, scrollLeft) =>
-                    handleScrollSync(device.name, scrollTop, scrollLeft)
+                    handleScrollSync(device.id, scrollTop, scrollLeft)
                   }
-                  visionDifficulty={
-                    visionDifficulties[device.name] || "default"
-                  }
-                  settings={deviceSettings[device.name]} // Pass device settings
+                  visionDifficulty={visionDifficulties[device.id] || "default"}
+                  settings={deviceSettings[device.id]} // Pass device settings
                 />
               </div>
             </div>
