@@ -11,8 +11,6 @@ function Header({
   setIsScrollInSync,
   isDevConsoleVisible,
   setIsDevConsoleVisible,
-  isSettingsVisible,
-  setIsSettingsVisible,
   selectedDevices,
   removeDevice,
 }) {
@@ -47,8 +45,6 @@ function Header({
         setIsScrollInSync={setIsScrollInSync}
         isDevConsoleVisible={isDevConsoleVisible}
         setIsDevCOnsoleVisible={setIsDevConsoleVisible}
-        isSettingsVisible={isSettingsVisible}
-        setIsSettingsVisible={setIsSettingsVisible}
         selectedDevices={selectedDevices}
         removeDevice={removeDevice}
       />

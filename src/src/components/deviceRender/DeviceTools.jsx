@@ -97,18 +97,18 @@ function DeviceTools({
                       <Tab
                         value={true}
                         className="text-[12px]"
-                        onClick={() =>
-                          toggleDeviceSetting(device.name, "isCSSEnabled")
-                        }
+                        onClick={() => {
+                          toggleDeviceSetting("isCSSEnabled");
+                        }}
                       >
                         Enabled
                       </Tab>
                       <Tab
                         value={false}
                         className="text-[12px]"
-                        onClick={() =>
-                          toggleDeviceSetting(device.name, "isCSSEnabled")
-                        }
+                        onClick={() => {
+                          toggleDeviceSetting("isCSSEnabled");
+                        }}
                       >
                         Disabled
                       </Tab>
@@ -123,18 +123,14 @@ function DeviceTools({
                       <Tab
                         value={true}
                         className="text-[12px]"
-                        onClick={() =>
-                          toggleDeviceSetting(device.name, "isJSEnabled")
-                        }
+                        onClick={() => toggleDeviceSetting("isJSEnabled")}
                       >
                         Enabled
                       </Tab>
                       <Tab
                         value={false}
                         className="text-[12px]"
-                        onClick={() =>
-                          toggleDeviceSetting(device.name, "isJSEnabled")
-                        }
+                        onClick={() => toggleDeviceSetting("isJSEnabled")}
                       >
                         Disabled
                       </Tab>

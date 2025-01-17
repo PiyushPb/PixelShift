@@ -21,8 +21,6 @@ function HeaderTools({
   setIsScrollInSync,
   isDevConsoleVisible,
   setIsDevCOnsoleVisible,
-  isSettingsVisible,
-  setIsSettingsVisible,
   selectedDevices,
   removeDevice, // Receive removeDevice function
 }) {
@@ -85,7 +83,7 @@ function HeaderTools({
         </Menu>
       </div>
       {/* Camera */}
-      <IoCameraOutline size={20} className="text-gray-400" />
+      {/* <IoCameraOutline size={20} className="text-gray-400" /> */}
 
       {/* Toggle SideDevConsole */}
       <div
@@ -122,16 +120,19 @@ function HeaderTools({
         <FaGithub size={20} className="text-gray-400 group-hover:text-white" />
       </a>
       {/* Toggle settings */}
-      <div
-        className={`w-[25px] h-[25px] flex justify-center items-center rounded-md cursor-pointer ${
-          isSettingsVisible ? "bg-primary" : ""
-        }`}
-        onClick={() => setIsSettingsVisible(!isSettingsVisible)}
-      >
-        <LuSettings2
-          size={20}
-          className={`${isSettingsVisible ? "text-white" : "text-gray-400"}`}
-        />
+      <div>
+        <Menu animate={{ mount: { y: 0 }, unmount: { y: 25 } }}>
+          <MenuHandler>
+            <div>
+              <LuSettings2 size={20} className="text-gray-400" />
+            </div>
+          </MenuHandler>
+          <MenuList className="w-[300px]">
+            <MenuItem className="flex justify-between items-center gap-2">
+              <span>Settings</span>
+            </MenuItem>
+          </MenuList>
+        </Menu>
       </div>
       {/* Toggle close the extension */}
       <div

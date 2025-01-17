@@ -85,13 +85,18 @@ function Body({
   };
 
   const toggleDeviceSetting = (deviceId, settingKey) => {
-    setDeviceSettings((prevState) => ({
-      ...prevState,
-      [deviceId]: {
-        ...prevState[deviceId],
-        [settingKey]: !prevState[deviceId][settingKey],
-      },
-    }));
+    setDeviceSettings((prevState) => {
+      const newState = {
+        ...prevState,
+        [deviceId]: {
+          ...prevState[deviceId],
+          [settingKey]: !prevState[deviceId]?.[settingKey],
+        },
+      };
+
+      console.log(newState[deviceId]); // Log only the object for the specific device
+      return newState;
+    });
   };
 
   return (

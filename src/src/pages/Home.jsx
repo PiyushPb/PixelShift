@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import Header from "../components/app/Header";
 import Body from "../components/app/Body";
 import DevConsole from "../components/app/DevConsole";
-import Settings from "./Settings";
 import { devices } from "../constants/devices";
 
 function Home() {
@@ -12,8 +11,6 @@ function Home() {
 
   const [isScrollInSync, setIsScrollInSync] = useState(false);
   const [isDevConsoleVisible, setIsDevConsoleVisible] = useState(false);
-  const [isSettingsVisible, setIsSettingsVisible] = useState(false);
-
   // Make selectedDevices a state with IDs
   const [selectedDevices, setSelectedDevices] = useState([
     { ...devices.mobile[0], id: "mobile-1" },
@@ -57,33 +54,25 @@ function Home() {
         setIsScrollInSync={setIsScrollInSync}
         isDevConsoleVisible={isDevConsoleVisible}
         setIsDevConsoleVisible={setIsDevConsoleVisible}
-        isSettingsVisible={isSettingsVisible}
-        setIsSettingsVisible={setIsSettingsVisible}
         selectedDevices={selectedDevices}
         addDevice={addDevice}
         removeDevice={removeDevice}
       />
       <div className="w-full h-full flex flex-row overflow-hidden">
-        {isSettingsVisible ? (
-          <Settings />
-        ) : (
-          <>
-            <Body
-              url={url}
-              resizePercentage={resizePercentage}
-              isScrollInSync={isScrollInSync}
-              setIsScrollInSync={setIsScrollInSync}
-              selectedDevices={selectedDevices}
-            />
-            <div
-              className={`${
-                isDevConsoleVisible ? "block max-w-[1000px] " : "hidden"
-              }`}
-            >
-              <DevConsole />
-            </div>
-          </>
-        )}
+        <Body
+          url={url}
+          resizePercentage={resizePercentage}
+          isScrollInSync={isScrollInSync}
+          setIsScrollInSync={setIsScrollInSync}
+          selectedDevices={selectedDevices}
+        />
+        <div
+          className={`${
+            isDevConsoleVisible ? "block max-w-[1000px] " : "hidden"
+          }`}
+        >
+          <DevConsole />
+        </div>
       </div>
     </section>
   );
