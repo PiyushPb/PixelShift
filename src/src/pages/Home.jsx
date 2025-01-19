@@ -3,6 +3,7 @@ import Header from "../components/app/Header";
 import Body from "../components/app/Body";
 import DevConsole from "../components/app/DevConsole";
 import { devices } from "../constants/devices";
+import AddNewDevice from "../components/modal/AddNewDevice";
 
 function Home() {
   const [defaultUrl, setDefaultUrl] = useState("");
@@ -11,6 +12,9 @@ function Home() {
 
   const [isScrollInSync, setIsScrollInSync] = useState(false);
   const [isDevConsoleVisible, setIsDevConsoleVisible] = useState(false);
+
+  const [showAddDeviceModal, setShowAddDeviceModal] = useState(false);
+
   // Make selectedDevices a state with IDs
   const [selectedDevices, setSelectedDevices] = useState([
     { ...devices.mobile[0], id: "mobile-1" },
@@ -19,6 +23,16 @@ function Home() {
     { ...devices.computers[0], id: "computer-1" },
     { ...devices.computers[4], id: "computer-5" },
   ]);
+
+  const [deviceSettings, setDeviceSettings] = useState(
+    selectedDevices.reduce((acc, device) => {
+      acc[device.id] = {
+        isCSSEnabled: true, // Default to CSS enabled
+        isJSEnabled: true, // Default to JS enabled
+      };
+      return acc;
+    }, {})
+  );
 
   useEffect(() => {
     const website_url = "http://localhost:5173/test";
@@ -42,10 +56,25 @@ function Home() {
         id: deviceId,
       },
     ]);
+
+    setDeviceSettings((prevSettings) => ({
+      ...prevSettings,
+      [deviceId]: {
+        isCSSEnabled: true, // Default to CSS enabled
+        isJSEnabled: true, // Default to JS enabled
+      },
+    }));
   };
 
   return (
     <section className="w-full h-screen flex flex-col">
+      {showAddDeviceModal && (
+        <AddNewDevice
+          showAddDeviceModal={showAddDeviceModal}
+          setShowAddDeviceModal={setShowAddDeviceModal}
+          addDevice={addDevice}
+        />
+      )}
       <Header
         url={url}
         resizePercentage={resizePercentage}
@@ -55,8 +84,8 @@ function Home() {
         isDevConsoleVisible={isDevConsoleVisible}
         setIsDevConsoleVisible={setIsDevConsoleVisible}
         selectedDevices={selectedDevices}
-        addDevice={addDevice}
         removeDevice={removeDevice}
+        setShowAddDeviceModal={setShowAddDeviceModal}
       />
       <div className="w-full h-full flex flex-row overflow-hidden">
         <Body
@@ -65,6 +94,8 @@ function Home() {
           isScrollInSync={isScrollInSync}
           setIsScrollInSync={setIsScrollInSync}
           selectedDevices={selectedDevices}
+          deviceSettings={deviceSettings}
+          setDeviceSettings={setDeviceSettings}
         />
         <div
           className={`${

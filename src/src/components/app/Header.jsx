@@ -12,7 +12,9 @@ function Header({
   isDevConsoleVisible,
   setIsDevConsoleVisible,
   selectedDevices,
+  addDevice,
   removeDevice,
+  setShowAddDeviceModal,
 }) {
   return (
     <div className="w-full flex justify-normal items-center p-3 bg-secondary-background">
@@ -46,7 +48,9 @@ function Header({
         isDevConsoleVisible={isDevConsoleVisible}
         setIsDevCOnsoleVisible={setIsDevConsoleVisible}
         selectedDevices={selectedDevices}
+        addDevice={addDevice}
         removeDevice={removeDevice}
+        setShowAddDeviceModal={setShowAddDeviceModal}
       />
     </div>
   );

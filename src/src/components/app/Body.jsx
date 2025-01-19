@@ -14,21 +14,14 @@ function Body({
   isScrollInSync,
   setIsScrollInSync,
   selectedDevices,
+  deviceSettings,
+  setDeviceSettings,
 }) {
   const scale = useMemo(() => resizePercentage / 100, [resizePercentage]);
   const [deviceDimensions, setDeviceDimensions] = useState({});
   const iframeRefs = useRef({});
   const [visionDifficulties, setVisionDifficulties] = useState({});
 
-  const [deviceSettings, setDeviceSettings] = useState(
-    selectedDevices.reduce((acc, device) => {
-      acc[device.id] = {
-        isCSSEnabled: true, // Default to CSS enabled
-        isJSEnabled: true, // Default to JS enabled
-      };
-      return acc;
-    }, {})
-  );
 
   const handleResize = useCallback((deviceId, width, height) => {
     setDeviceDimensions((prevDimensions) => ({
@@ -94,7 +87,7 @@ function Body({
         },
       };
 
-      console.log(newState[deviceId]); // Log only the object for the specific device
+      console.log(deviceSettings);
       return newState;
     });
   };

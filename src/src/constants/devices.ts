@@ -230,3 +230,10 @@ export const devices = {
     },
   ],
 };
+
+export const deviceCategories = [
+  { id: "all", name: "All Devices" },
+  { id: "mobiles", name: "Mobile" },
+  { id: "tablets", name: "Tablet" },
+  { id: "computers", name: "Computer" },
+];

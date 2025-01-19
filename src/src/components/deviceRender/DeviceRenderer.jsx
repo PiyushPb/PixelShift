@@ -10,7 +10,7 @@ const DeviceRenderer = ({
   onScroll,
   onClick,
   visionDifficulty,
-  settings, // Receive the settings object directly
+  settings, 
 }) => {
   const [iframeSrc, setIframeSrc] = useState("");
   const containerRef = useRef(null);

@@ -22,7 +22,8 @@ function HeaderTools({
   isDevConsoleVisible,
   setIsDevCOnsoleVisible,
   selectedDevices,
-  removeDevice, // Receive removeDevice function
+  removeDevice,
+  setShowAddDeviceModal,
 }) {
   function selectedDevicesCount() {
     const devicesCount = selectedDevices.length;
@@ -76,7 +77,10 @@ function HeaderTools({
                 </MenuItem>
               ))}
             </div>
-            <Button className="w-full text-[12px] font-normal normal-case font-family-manrope mt-3">
+            <Button
+              className="w-full text-[12px] font-normal normal-case font-family-manrope mt-3"
+              onClick={() => setShowAddDeviceModal(true)}
+            >
               Add New Device
             </Button>
           </MenuList>
