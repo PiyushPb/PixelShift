@@ -11,7 +11,7 @@ createRoot(document.getElementById("root")).render(
   <StrictMode>
     <ThemeProvider>
       <PixelShiftTheme>
-        <ToastContainer />
+        <ToastContainer autoClose={3000} position="bottom-right" />
         <App />
       </PixelShiftTheme>
     </ThemeProvider>

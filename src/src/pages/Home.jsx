@@ -12,6 +12,7 @@ function Home() {
 
   const [isScrollInSync, setIsScrollInSync] = useState(false);
   const [isDevConsoleVisible, setIsDevConsoleVisible] = useState(false);
+  const [verticalOrientation, setVerticalOrientation] = useState(false);
 
   const [showAddDeviceModal, setShowAddDeviceModal] = useState(false);
 
@@ -35,7 +36,8 @@ function Home() {
   );
 
   useEffect(() => {
-    const website_url = "http://localhost:5173/test";
+    const website_url = window.location.href;
+    // const website_url = "http://localhost:5173/test";
     setDefaultUrl(website_url);
     setUrl(website_url);
   }, []);
@@ -86,6 +88,8 @@ function Home() {
         selectedDevices={selectedDevices}
         removeDevice={removeDevice}
         setShowAddDeviceModal={setShowAddDeviceModal}
+        verticalOrientation={verticalOrientation}
+        setVerticalOrientation={setVerticalOrientation}
       />
       <div className="w-full h-full flex flex-row overflow-hidden">
         <Body
@@ -96,6 +100,7 @@ function Home() {
           selectedDevices={selectedDevices}
           deviceSettings={deviceSettings}
           setDeviceSettings={setDeviceSettings}
+          verticalOrientation={verticalOrientation}
         />
         <div
           className={`${

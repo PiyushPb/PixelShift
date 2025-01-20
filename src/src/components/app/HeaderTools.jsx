@@ -1,18 +1,20 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { IoCloseCircleOutline, IoCameraOutline } from "react-icons/io5";
 import { FaGithub } from "react-icons/fa6";
-import { LuSettings2, LuMousePointerClick } from "react-icons/lu";
+import { LuSettings2 } from "react-icons/lu";
 import { TbLayoutSidebarRightFilled } from "react-icons/tb";
 import { LiaLaptopSolid } from "react-icons/lia";
 import { PiMouseScroll } from "react-icons/pi";
+import { LuGalleryHorizontalEnd } from "react-icons/lu";
+
 import {
   Button,
   Menu,
   MenuHandler,
   MenuItem,
   MenuList,
+  Tooltip,
 } from "@material-tailwind/react";
-import { FaArrowsUpDown } from "react-icons/fa6";
 
 function HeaderTools({
   resizePercentage,
@@ -24,132 +26,187 @@ function HeaderTools({
   selectedDevices,
   removeDevice,
   setShowAddDeviceModal,
+  verticalOrientation,
+  setVerticalOrientation,
 }) {
-  function selectedDevicesCount() {
-    const devicesCount = selectedDevices.length;
-    return devicesCount > 9 ? "9+" : devicesCount;
-  }
+  // Helper function to count selected devices
+  const selectedDevicesCount = () =>
+    selectedDevices.length > 9 ? "9+" : selectedDevices.length;
 
+  // Handle resizing percentage change
   const handleResizeChange = (event) => {
     setResizePercentage(event.target.value);
   };
 
+  const handleAboutClick = () => {
+    // Get the extension ID dynamically using chrome.runtime.id
+    const extensionId = chrome.runtime.id;
+
+    if (extensionId) {
+      // Open the about.html page in a new tab within the extension's context
+      window.open(`chrome-extension://${extensionId}/about.html`, "_blank");
+    } else {
+      console.error("Extension ID is not available");
+    }
+  };
+
   return (
     <div className="flex flex-row justify-normal items-center gap-2 ml-5">
-      <div
-        className={`w-[25px] h-[25px] flex justify-center items-center rounded-md cursor-pointer ${
-          isScrollInSync ? "bg-primary" : ""
-        }`}
-        onClick={() => setIsScrollInSync(!isScrollInSync)}
-      >
-        <PiMouseScroll
-          size={20}
-          className={`${isScrollInSync ? "text-white" : "text-gray-400"}`}
-        />
-      </div>
+      {/* Sync Scroll Toggle */}
+      <Tooltip content="Toggle Scroll Sync">
+        <div
+          className={`w-[25px] h-[25px] flex justify-center items-center rounded-md cursor-pointer ${
+            isScrollInSync ? "bg-primary" : ""
+          }`}
+          onClick={() => setIsScrollInSync(!isScrollInSync)}
+        >
+          <PiMouseScroll
+            size={20}
+            className={`${isScrollInSync ? "text-white" : "text-gray-400"}`}
+          />
+        </div>
+      </Tooltip>
+
       {/* Selected Devices */}
-      <div>
-        <Menu animate={{ mount: { y: 0 }, unmount: { y: 25 } }}>
-          <MenuHandler>
-            <div className="relative">
-              <span className="absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] text-[12px] select-none">
-                {selectedDevicesCount()}
-              </span>
-              <LiaLaptopSolid size={20} className="text-gray-400" />
-            </div>
-          </MenuHandler>
-          <MenuList className="w-[300px]">
-            <div className="border-none outline-none focus:outline-none max-h-[500px] overflow-y-auto">
-              {selectedDevices.map((device) => (
-                <MenuItem
-                  key={device.id}
-                  className="flex justify-between items-center gap-2"
-                >
-                  <span>{device.name}</span>
-                  <div className="flex items-center gap-2">
-                    {/* Close button for each device */}
+      <Tooltip content="Selected Devices">
+        <div>
+          <Menu animate={{ mount: { y: 0 }, unmount: { y: 25 } }}>
+            <MenuHandler>
+              <div className="relative">
+                <span className="absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] text-[12px] select-none">
+                  {selectedDevicesCount()}
+                </span>
+                <LiaLaptopSolid size={20} className="text-gray-400" />
+              </div>
+            </MenuHandler>
+            <MenuList className="w-[300px]">
+              <div className="border-none outline-none focus:outline-none max-h-[500px] overflow-y-auto">
+                {selectedDevices.map((device) => (
+                  <MenuItem
+                    key={device.id}
+                    className="flex justify-between items-center gap-2"
+                  >
+                    <span>{device.name}</span>
                     <IoCloseCircleOutline
                       size={20}
                       className="text-gray-400 cursor-pointer"
-                      onClick={() => removeDevice(device.id)} // Pass the specific device ID
+                      onClick={() => removeDevice(device.id)}
                     />
-                  </div>
-                </MenuItem>
-              ))}
-            </div>
-            <Button
-              className="w-full text-[12px] font-normal normal-case font-family-manrope mt-3"
-              onClick={() => setShowAddDeviceModal(true)}
-            >
-              Add New Device
-            </Button>
-          </MenuList>
-        </Menu>
-      </div>
-      {/* Camera */}
-      {/* <IoCameraOutline size={20} className="text-gray-400" /> */}
+                  </MenuItem>
+                ))}
+              </div>
+              <Button
+                className="w-full text-[12px] font-normal normal-case font-family-manrope mt-3"
+                onClick={() => setShowAddDeviceModal(true)}
+              >
+                Add New Device
+              </Button>
+            </MenuList>
+          </Menu>
+        </div>
+      </Tooltip>
 
-      {/* Toggle SideDevConsole */}
-      <div
-        className={`w-[25px] h-[25px] flex justify-center items-center rounded-md cursor-pointer ${
-          isDevConsoleVisible ? "bg-primary" : ""
-        }`}
-        onClick={() => setIsDevCOnsoleVisible(!isDevConsoleVisible)}
+      {/* Dev Console Toggle */}
+      <Tooltip content="Toggle Dev Console">
+        <div
+          className={`w-[25px] h-[25px] flex justify-center items-center rounded-md cursor-pointer ${
+            isDevConsoleVisible ? "bg-primary" : ""
+          }`}
+          onClick={() => setIsDevCOnsoleVisible(!isDevConsoleVisible)}
+        >
+          <TbLayoutSidebarRightFilled
+            size={20}
+            className={`${
+              isDevConsoleVisible ? "text-white" : "text-gray-400"
+            }`}
+          />
+        </div>
+      </Tooltip>
+
+      {/* Toggle view */}
+      <Tooltip
+        content={`${
+          verticalOrientation ? "Toggle Vertical" : "Toggle Horizontal"
+        } View`}
       >
-        <TbLayoutSidebarRightFilled
-          size={20}
-          className={`${isDevConsoleVisible ? "text-white" : "text-gray-400"}`}
-        />
-      </div>
+        <div
+          className="w-[25px] h-[25px] flex justify-center items-center rounded-md cursor-pointer group hover:bg-primary dark:hover:bg-primary-dark transition-all duration-200"
+          onClick={() => setVerticalOrientation(!verticalOrientation)}
+        >
+          <LuGalleryHorizontalEnd
+            size={20}
+            className={`text-gray-400 group-hover:text-white ${
+              !verticalOrientation ? "rotate-90" : ""
+            }`}
+          />
+        </div>
+      </Tooltip>
+
+      {/* Resize Percentage Slider */}
       <div className="flex items-center gap-2">
-        <input
-          type="range"
-          min="50"
-          max="100"
-          step="10"
-          className="w-20 h-2 bg-gray-300 rounded-full"
-          style={{ outline: "none" }}
-          value={resizePercentage}
-          onChange={handleResizeChange}
-        />
+        <Tooltip content="Adjust Resize Percentage">
+          <input
+            type="range"
+            min="50"
+            max="100"
+            step="10"
+            className="w-20 h-2 bg-gray-300 rounded-full"
+            style={{ outline: "none" }}
+            value={resizePercentage}
+            onChange={handleResizeChange}
+          />
+        </Tooltip>
         <span>{resizePercentage}%</span>
       </div>
-      {/* Redirect user to PixelShift Github */}
-      <a
-        href="https://github.com/PiyushPb/PixleShift"
-        className="w-[25px] h-[25px] flex justify-center items-center rounded-md cursor-pointer group hover:bg-primary dark:hover:bg-primary-dark transition-all duration-200"
-        rel="noopener noreferrer"
-        target="blank"
-      >
-        <FaGithub size={20} className="text-gray-400 group-hover:text-white" />
-      </a>
-      {/* Toggle settings */}
-      <div>
-        <Menu animate={{ mount: { y: 0 }, unmount: { y: 25 } }}>
-          <MenuHandler>
-            <div>
-              <LuSettings2 size={20} className="text-gray-400" />
-            </div>
-          </MenuHandler>
-          <MenuList className="w-[300px]">
-            <MenuItem className="flex justify-between items-center gap-2">
-              <span>Settings</span>
-            </MenuItem>
-          </MenuList>
-        </Menu>
-      </div>
-      {/* Toggle close the extension */}
-      <div
-        className="w-[25px] h-[25px] flex justify-center items-center rounded-md cursor-pointer group hover:bg-red-400 transition-all duration-200"
-        onClick={() => {
-          location.reload();
-        }}
-      >
-        <IoCloseCircleOutline
-          size={20}
-          className="text-gray-400 group-hover:text-white"
-        />
-      </div>
+
+      {/* GitHub Link */}
+      <Tooltip content="Open GitHub Repository">
+        <a
+          href="https://github.com/PiyushPb/PixelShift"
+          className="w-[25px] h-[25px] flex justify-center items-center rounded-md cursor-pointer group hover:bg-primary dark:hover:bg-primary-dark transition-all duration-200"
+          rel="noopener noreferrer"
+          target="_blank"
+        >
+          <FaGithub
+            size={20}
+            className="text-gray-400 group-hover:text-white"
+          />
+        </a>
+      </Tooltip>
+
+      {/* Settings Menu */}
+      <Tooltip content="Open Settings">
+        <div>
+          <Menu animate={{ mount: { y: 0 }, unmount: { y: 25 } }}>
+            <MenuHandler>
+              <div>
+                <LuSettings2 size={20} className="text-gray-400" />
+              </div>
+            </MenuHandler>
+            <MenuList className="w-[300px]">
+              <MenuItem
+                className="flex justify-between items-center gap-2"
+                onClick={handleAboutClick}
+              >
+                <span>About PixelShift</span>
+              </MenuItem>
+            </MenuList>
+          </Menu>
+        </div>
+      </Tooltip>
+
+      {/* Reload Extension */}
+      <Tooltip content="Close Extension">
+        <div
+          className="w-[25px] h-[25px] flex justify-center items-center rounded-md cursor-pointer group hover:bg-red-400 transition-all duration-200"
+          onClick={() => location.reload()}
+        >
+          <IoCloseCircleOutline
+            size={20}
+            className="text-gray-400 group-hover:text-white"
+          />
+        </div>
+      </Tooltip>
     </div>
   );
 }

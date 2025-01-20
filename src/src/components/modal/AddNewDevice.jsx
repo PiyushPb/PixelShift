@@ -97,7 +97,7 @@ function AddNewDevice({
                 </div>
                 <span className="mt-2 text-center">{device.name}</span>
                 <span className="mt-2 text-center text-sm text-gray-600">
-                  ({device.width}px x {device.height}px)
+                  {device.width} x {device.height} px
                 </span>
               </div>
             ))}

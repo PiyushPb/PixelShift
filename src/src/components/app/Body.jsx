@@ -16,12 +16,12 @@ function Body({
   selectedDevices,
   deviceSettings,
   setDeviceSettings,
+  verticalOrientation,
 }) {
   const scale = useMemo(() => resizePercentage / 100, [resizePercentage]);
   const [deviceDimensions, setDeviceDimensions] = useState({});
   const iframeRefs = useRef({});
   const [visionDifficulties, setVisionDifficulties] = useState({});
-
 
   const handleResize = useCallback((deviceId, width, height) => {
     setDeviceDimensions((prevDimensions) => ({
@@ -94,7 +94,19 @@ function Body({
 
   return (
     <div className="flex w-full h-full overflow-auto">
-      <div className="w-full flex flex-wrap gap-5 p-4 pb-10 h-full scroll-container">
+      <div
+        className={`w-full flex ${
+          verticalOrientation ? "flex-col" : ""
+        } flex-wrap gap-5 p-4 pb-10 h-full scroll-container`}
+      >
+        {selectedDevices.length === 0 && (
+          <div className="w-full h-full flex justify-center items-center">
+            <p>
+              Please add devices to see them here, you can click on the add
+              device button in the header to add new devices.
+            </p>
+          </div>
+        )}
         {selectedDevices.map((device) => {
           const dimensions = deviceDimensions[device.id] || {
             width: device.width,

@@ -15,6 +15,8 @@ function Header({
   addDevice,
   removeDevice,
   setShowAddDeviceModal,
+  verticalOrientation,
+  setVerticalOrientation,
 }) {
   return (
     <div className="w-full flex justify-normal items-center p-3 bg-secondary-background">
@@ -51,6 +53,8 @@ function Header({
         addDevice={addDevice}
         removeDevice={removeDevice}
         setShowAddDeviceModal={setShowAddDeviceModal}
+        verticalOrientation={verticalOrientation}
+        setVerticalOrientation={setVerticalOrientation}
       />
     </div>
   );
